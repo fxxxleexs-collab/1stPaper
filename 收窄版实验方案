@@ -1,0 +1,1429 @@
+# 巴赫早中期风格迁移研究：收束版实验方案
+
+## 1. 研究定位
+
+本研究是一项面向音乐学问题的计算音乐学探索性研究。
+
+研究目标不是用计算方法重新“证明”巴赫受北德传统或意大利协奏曲影响，而是将传统音乐史中关于巴赫早中期风格吸收、转换与综合的叙事，转化为一套可复核、可比较、可解释的符号音乐证据框架。
+
+本研究的核心贡献在于：
+
+1. 将巴赫早中期风格迁移问题转化为可操作的符号音乐分析任务；
+2. 建立巴赫不同时期作品与外部参照风格之间的结构距离关系；
+3. 分析这种迁移主要体现在哪些音乐结构维度；
+4. 观察风格变化是否表现为作品内部局部语汇比例的变化；
+5. 将计算结果谨慎地放回巴赫生平阶段与历史事件框架中解释。
+
+---
+
+## 2. 主研究问题
+
+本研究围绕一个核心问题展开：
+
+> 巴赫早中期作品的符号音乐特征是否呈现出从北德键盘/管风琴传统、意大利协奏曲语言，到克滕时期器乐综合风格的阶段性迁移？
+
+该问题可以进一步拆解为三个子问题：
+
+1. 巴赫早期作品在符号音乐特征空间中是否更接近北德键盘与管风琴传统？
+2. 魏玛时期作品是否在节奏组织、模进密度、调性清晰度等方面向意大利协奏曲语言靠近？
+3. 克滕时期作品是否不再表现为单一的意大利化，而是呈现出多源风格的综合性？
+
+---
+
+## 3. 研究假设
+
+本研究采用探索性假设，而非强因果假设。
+
+### H1：早期北德接近假设
+
+巴赫早期作品在符号音乐特征空间中，相比魏玛和克滕时期，更接近北德键盘/管风琴传统参照作曲家。
+
+可能体现为：
+
+```text
+higher similarity to North German centroid
+higher polyphonic density
+greater textural variability
+more fantasy-like local patterns
+stronger contrapuntal independence
+```
+
+### H2：魏玛意大利化假设
+
+魏玛时期作品相比早期作品，与意大利协奏曲传统参照作曲家的距离缩小。
+
+可能体现为：
+
+```text
+higher rhythmic regularity
+higher sequence density
+clearer tonal organization
+stronger motor-rhythm tendency
+more Italian-like segment proportion
+```
+
+### H3：克滕综合化假设
+
+克滕时期作品不应被简单理解为继续意大利化，而更可能表现为多源风格的并存与重组。
+
+可能体现为：
+
+```text
+balanced similarity to multiple reference centroids
+higher segment-type diversity
+higher mixed-style segment ratio
+stronger motivic organization
+more genre-dependent internal differentiation
+```
+
+---
+
+## 4. 数据设计
+
+## 4.1 核心数据
+
+本研究使用符号乐谱数据，优先采用 MusicXML 或可稳定转换为 MusicXML 的乐谱文件。
+
+数据分为两类：
+
+```text
+Bach corpus
+Reference corpus
+```
+
+### Bach corpus
+
+第一篇论文建议只保留三个阶段：
+
+```text
+Bach Early
+Bach Weimar
+Bach Köthen
+```
+
+Early Leipzig 可作为补充材料或后续研究，不放入主结论。
+
+### Reference corpus
+
+参照作曲家分为三组：
+
+```text
+North German reference:
+- Dieterich Buxtehude
+- Georg Böhm
+- Johann Adam Reincken, if sufficient data are available
+
+Italian reference:
+- Antonio Vivaldi
+- Arcangelo Corelli
+
+German mixed reference:
+- Georg Philipp Telemann
+- George Frideric Handel, optional
+```
+
+为了控制第一篇论文的规模，建议最低可行版本采用：
+
+```text
+North German:
+- Buxtehude
+- Böhm
+
+Italian:
+- Vivaldi
+- Corelli
+
+German mixed:
+- Telemann
+```
+
+Handel 和 Reincken 作为扩展数据，不应影响主实验是否能完成。
+
+---
+
+## 4.2 元数据字段
+
+每部作品至少记录以下字段：
+
+```text
+work_id
+composer
+title
+catalogue_no
+genre
+instrumentation
+estimated_year_start
+estimated_year_end
+period_label
+place_or_context
+historical_event_label
+source_confidence
+xml_path
+movement_id
+movement_title
+```
+
+其中：
+
+```text
+period_label
+```
+
+用于标注：
+
+```text
+Bach_Early
+Bach_Weimar
+Bach_Köthen
+Reference_NorthGerman
+Reference_Italian
+Reference_GermanMixed
+```
+
+```text
+source_confidence
+```
+
+用于记录作品年代、归属、来源可靠性，例如：
+
+```text
+high
+medium
+low
+```
+
+低置信度作品不建议进入主实验，可放入附录稳健性测试。
+
+---
+
+## 4.3 体裁控制原则
+
+体裁混淆是本研究最大的潜在风险之一。
+
+因此本研究必须记录并控制：
+
+```text
+genre
+instrumentation
+sacred/secular context
+keyboard/organ/chamber/orchestral category
+```
+
+主分析中需要至少提供两种结果：
+
+### 1. 全体数据分析
+
+用于观察整体风格空间和宏观迁移趋势。
+
+### 2. Genre-controlled analysis
+
+用于回应以下质疑：
+
+> 观察到的风格迁移是否只是体裁变化，而不是音乐语言变化？
+
+可采用以下方式：
+
+```text
+keyboard/organ subset
+instrumental/chamber subset
+genre as covariate
+within-genre distance comparison
+```
+
+如果数据量不足以严格控制体裁，则必须在论文中明确说明：
+
+> 本研究观察到的风格迁移可能部分通过体裁环境变化实现，因此结果应理解为“风格—体裁—职业环境”共同作用下的结构迁移，而不是纯粹抽象的风格漂移。
+
+---
+
+## 5. Segment 切分策略
+
+## 5.1 基本切分单位
+
+主实验采用固定小节切分：
+
+```text
+16 bars per segment
+```
+
+每个 movement 或独立作品按照小节顺序切分为若干 segment。
+
+不足 16 小节的尾段建议在主实验中舍弃，并在附录中测试“保留尾段”是否影响结果。
+
+---
+
+## 5.2 稳健性切分
+
+为了避免 16 小节切分带来的偶然性，可进行两个辅助尺度的稳健性测试：
+
+```text
+8 bars
+32 bars
+```
+
+但主文中只保留 16 小节结果。
+
+8 小节与 32 小节结果可用于附录，主要回答：
+
+> 主要趋势是否依赖切分尺度？
+
+---
+
+## 5.3 分析层级
+
+本研究采用两级分析：
+
+```text
+segment-level features
+→ work-level aggregation
+```
+
+segment-level 用于观察局部语汇和风格混合。
+
+work-level 用于计算作品整体风格位置、period centroid 和 distance curve。
+
+作品层聚合方式包括：
+
+```text
+mean
+median
+standard deviation
+segment cluster distribution
+distance to reference centroid
+```
+
+---
+
+## 6. 表征设计
+
+本研究采用：
+
+```text
+white-box symbolic features as primary evidence
+MusicBERT embedding as supplementary robustness evidence
+```
+
+也就是说：
+
+1. 白盒符号特征是论文主证据；
+2. MusicBERT 不作为核心证据；
+3. MusicBERT 只用于检查主要趋势是否也能在预训练符号表征中部分出现；
+4. 若 MusicBERT 与白盒特征一致，可作为稳健性支持；
+5. 若 MusicBERT 与白盒特征不一致，则将其解释为模型表征与音乐学可解释特征之间的差异，而不影响主结论。
+
+---
+
+## 7. 白盒符号特征家族
+
+为了避免特征过度膨胀，第一篇论文建议保留六类主要特征家族。
+
+```text
+Pitch
+Interval
+Rhythm
+Tonal-Harmonic
+Polyphony / Texture
+Motif / Sequence
+```
+
+原方案中的无监督几何特征可以部分并入 Motif / Sequence，不再单独作为一个大模块。
+
+---
+
+## 7.1 Pitch Features
+
+用于描述音高空间和旋律高度分布。
+
+代表特征：
+
+```text
+pitch_range
+mean_pitch
+pitch_std
+pitch_class_histogram
+pitch_entropy
+register_distribution
+climax_position
+```
+
+解释目标：
+
+```text
+melodic register
+pitch-space organization
+overall pitch distribution
+```
+
+---
+
+## 7.2 Interval Features
+
+用于描述旋律运动方式。
+
+代表特征：
+
+```text
+melodic_interval_histogram
+stepwise_motion_ratio
+leap_ratio
+large_leap_ratio
+repeated_note_ratio
+direction_change_rate
+interval_entropy
+```
+
+解释目标：
+
+```text
+fantasy-like line
+instrumental motion
+stepwise vs leaping tendency
+melodic regularity
+```
+
+---
+
+## 7.3 Rhythm Features
+
+用于描述节奏密度、规整性与运动感。
+
+代表特征：
+
+```text
+note_duration_histogram
+mean_note_duration
+duration_entropy
+onset_density
+rest_ratio
+syncopation_index
+dotted_rhythm_ratio
+rhythmic_regularity
+```
+
+解释目标：
+
+```text
+motor rhythm
+dance-like rhythm
+rhythmic regularity
+French-style dotted patterns
+```
+
+---
+
+## 7.4 Tonal-Harmonic Features
+
+用于描述调性组织、半音化和局部调性变化。
+
+代表特征：
+
+```text
+estimated_key
+major_minor_mode
+chromaticism_ratio
+non_diatonic_pitch_ratio
+local_key_diversity
+cadence_like_pattern_count
+circle_of_fifths_motion
+modulation_density_proxy
+```
+
+解释目标：
+
+```text
+tonal clarity
+chromaticism
+local tonal wandering
+Italian concerto-like tonal organization
+```
+
+---
+
+## 7.5 Polyphony / Texture Features
+
+用于描述声部组织、织体密度和对位关系。
+
+代表特征：
+
+```text
+active_voice_count
+voice_density
+simultaneity_density
+voice_crossing_count
+vertical_interval_distribution
+consonance_dissonance_ratio
+contrapuntal_independence
+homophony_polyphony_ratio
+```
+
+解释目标：
+
+```text
+North German contrapuntal density
+organ / keyboard texture
+voice independence
+homophonic vs polyphonic tendency
+```
+
+---
+
+## 7.6 Motif / Sequence Features
+
+用于捕捉局部语汇、重复、模进和自相似结构。
+
+代表特征：
+
+```text
+melodic_ngram_frequency
+interval_ngram_frequency
+rhythmic_ngram_frequency
+interval_rhythm_ngram_frequency
+motif_recurrence_rate
+sequence_density
+transposed_repetition_count
+self_similarity_statistics
+compression_ratio
+```
+
+解释目标：
+
+```text
+sequence organization
+recurrent symbolic patterns
+frequent melodic-rhythmic cells
+motivic recurrence
+schematic repetition
+```
+
+使用原则：
+
+本研究不声称这些特征能够自动发现真正的“动机”。
+
+更稳妥的表述是：
+
+```text
+recurrent symbolic patterns
+frequent melodic-rhythmic cells
+candidate local idioms
+```
+
+---
+
+## 8. 主实验一：风格空间与时间轨迹
+
+## 8.1 目标
+
+回答：
+
+> 巴赫 Early / Weimar / Köthen 三个阶段在符号音乐特征空间中，是否呈现出可解释的相对位置变化？
+
+---
+
+## 8.2 输入
+
+```text
+work-level white-box feature vectors
+segment-level white-box feature vectors
+composer labels
+period labels
+genre labels
+reference group labels
+```
+
+---
+
+## 8.3 方法
+
+首先对所有白盒特征进行标准化：
+
+```text
+z-score normalization
+```
+
+然后构建两类空间：
+
+```text
+segment-level space
+work-level space
+```
+
+可视化方法以 PCA 和 UMAP 为主：
+
+```text
+PCA for interpretable global direction
+UMAP for nonlinear local neighborhood visualization
+```
+
+t-SNE 不作为主图，最多作为附录检查。
+
+---
+
+## 8.4 核心图表
+
+### Figure 1A：全体作品风格空间
+
+```text
+PCA / UMAP of work-level features
+colored by composer or reference group
+```
+
+### Figure 1B：巴赫时期轨迹
+
+```text
+Bach Early centroid
+→ Bach Weimar centroid
+→ Bach Köthen centroid
+```
+
+### Figure 1C：体裁控制后的风格空间
+
+```text
+same visualization within major genre subsets
+```
+
+---
+
+## 8.5 解释重点
+
+观察：
+
+1. Bach Early 是否更靠近 North German reference；
+2. Bach Weimar 是否向 Italian reference 方向移动；
+3. Bach Köthen 是否位于多个参照区域之间；
+4. 这种趋势在控制体裁后是否仍然部分保留。
+
+---
+
+## 8.6 谨慎表述
+
+不应写成：
+
+> UMAP 证明巴赫风格发生迁移。
+
+应写成：
+
+> 降维结果为巴赫早中期风格迁移提供了可视化线索。真正的主证据来自后续的参照距离曲线和特征家族解释。
+
+---
+
+## 9. 主实验二：参照风格距离曲线
+
+## 9.1 目标
+
+回答：
+
+> 巴赫各时期作品到不同参照风格中心的距离是否呈现出阶段性变化？
+
+这是本研究最重要的主实验。
+
+---
+
+## 9.2 参照风格中心
+
+构建三个 reference centroids：
+
+```text
+North German centroid
+= mean(Buxtehude, Böhm, Reincken)
+
+Italian centroid
+= mean(Vivaldi, Corelli)
+
+German mixed centroid
+= mean(Telemann, Handel)
+```
+
+最低可行版本：
+
+```text
+North German centroid
+= mean(Buxtehude, Böhm)
+
+Italian centroid
+= mean(Vivaldi, Corelli)
+
+German mixed centroid
+= mean(Telemann)
+```
+
+---
+
+## 9.3 距离计算
+
+对每个 Bach work 或 Bach period centroid，计算其到三个参照中心的距离。
+
+建议使用：
+
+```text
+cosine distance
+Euclidean distance after z-score normalization
+Mahalanobis distance, optional
+```
+
+主文中建议以 cosine distance 或 Euclidean distance 为主，Mahalanobis distance 放入附录或不使用。
+
+---
+
+## 9.4 核心指标
+
+```text
+D(Bach_Early, NorthGerman)
+D(Bach_Early, Italian)
+D(Bach_Early, GermanMixed)
+
+D(Bach_Weimar, NorthGerman)
+D(Bach_Weimar, Italian)
+D(Bach_Weimar, GermanMixed)
+
+D(Bach_Köthen, NorthGerman)
+D(Bach_Köthen, Italian)
+D(Bach_Köthen, GermanMixed)
+```
+
+---
+
+## 9.5 风格接近指数
+
+可以构造三个辅助指数。
+
+### North Germanity Index
+
+```text
+Similarity(Bach_t, NorthGerman)
+- Similarity(Bach_t, Italian)
+```
+
+解释：
+
+```text
+higher value = relatively closer to North German reference
+```
+
+### Italianization Index
+
+```text
+Similarity(Bach_t, Italian)
+- Similarity(Bach_t, NorthGerman)
+```
+
+解释：
+
+```text
+higher value = relatively closer to Italian reference
+```
+
+### Synthesis Index
+
+```text
+1 - variance([
+  Similarity(Bach_t, NorthGerman),
+  Similarity(Bach_t, Italian),
+  Similarity(Bach_t, GermanMixed)
+])
+```
+
+解释：
+
+```text
+higher value = more balanced similarity to multiple reference groups
+```
+
+Synthesis Index 只能作为探索性指标，不能过度解释为真正的“综合风格”。
+
+---
+
+## 9.6 核心图表
+
+### Figure 2A：Distance curve
+
+```text
+x-axis: Bach period
+y-axis: distance to reference centroid
+lines:
+- North German
+- Italian
+- German mixed
+```
+
+### Figure 2B：Similarity heatmap
+
+```text
+rows: Bach periods
+columns: reference centroids
+values: similarity or negative distance
+```
+
+### Figure 2C：Style indices
+
+```text
+North Germanity Index
+Italianization Index
+Synthesis Index
+```
+
+---
+
+## 9.7 统计检验
+
+采用轻量级统计检验即可。
+
+建议：
+
+```text
+bootstrap confidence interval
+permutation test
+effect size
+```
+
+不建议在第一篇中过度依赖复杂 mixed-effects model。
+
+若需要控制体裁，可使用：
+
+```text
+linear model with genre as covariate
+or within-genre comparison
+```
+
+---
+
+## 9.8 预期解释
+
+若结果支持假设，可以表述为：
+
+```text
+Bach Early shows relatively smaller distance to North German reference.
+Bach Weimar shows reduced distance to Italian reference.
+Bach Köthen shows a more balanced relationship to multiple reference centroids.
+```
+
+中文表述：
+
+> 巴赫早期作品更接近北德参照，魏玛时期与意大利参照的距离缩小，而克滕时期不再表现为单一向意大利靠近，而是呈现出更平衡的多源接近关系。
+
+---
+
+## 10. 主实验三：特征家族解释
+
+## 10.1 目标
+
+回答：
+
+> 巴赫风格迁移具体体现在哪些音乐结构维度上？
+
+重点不是追求复杂模型解释，而是用可解释、可复核的方法回答：
+
+```text
+Pitch?
+Interval?
+Rhythm?
+Tonal-Harmonic?
+Polyphony / Texture?
+Motif / Sequence?
+```
+
+---
+
+## 10.2 方法一：Family-level effect size
+
+对每个特征家族分别计算：
+
+```text
+Bach Early vs North German reference
+Bach Weimar vs Italian reference
+Bach Köthen vs German mixed reference
+Bach Early vs Bach Weimar
+Bach Weimar vs Bach Köthen
+```
+
+使用：
+
+```text
+standardized mean difference
+Cliff's delta
+bootstrap confidence interval
+```
+
+---
+
+## 10.3 方法二：Family-level ablation
+
+以全特征距离曲线为基准：
+
+```text
+All features
+```
+
+然后逐一移除某个特征家族：
+
+```text
+All - Pitch
+All - Interval
+All - Rhythm
+All - Tonal-Harmonic
+All - Polyphony / Texture
+All - Motif / Sequence
+```
+
+观察：
+
+```text
+distance curve stability
+period separation
+reference-centroid ranking
+classification accuracy, optional
+```
+
+---
+
+## 10.4 不建议使用的方法
+
+第一篇中不建议把以下方法作为主分析：
+
+```text
+SHAP
+deep model feature attribution
+complex nonlinear classifier explanation
+large-scale hyperparameter search
+```
+
+原因：
+
+1. 它们会使论文从音乐学问题转向模型解释问题；
+2. 它们对第一篇论文来说成本过高；
+3. 审稿人可能更关心音乐学解释，而不是复杂机器学习解释器。
+
+---
+
+## 10.5 核心图表
+
+### Figure 3A：Feature family effect size
+
+```text
+x-axis: feature family
+y-axis: effect size
+groups:
+- Early vs North German
+- Weimar vs Italian
+- Köthen vs mixed
+```
+
+### Figure 3B：Ablation impact
+
+```text
+x-axis: removed feature family
+y-axis: distance-curve change or ranking instability
+```
+
+### Figure 3C：Representative feature shifts
+
+展示少量最有音乐学解释力的具体特征，例如：
+
+```text
+sequence_density
+rhythmic_regularity
+contrapuntal_independence
+local_key_diversity
+chromaticism_ratio
+voice_density
+```
+
+---
+
+## 10.6 预期解释
+
+可能形成如下解释：
+
+```text
+North German proximity is mainly associated with polyphony / texture and interval features.
+Italian proximity is mainly associated with rhythm, sequence, and tonal-harmonic features.
+Köthen synthesis is associated with balanced contribution from multiple feature families and higher segment diversity.
+```
+
+中文表述：
+
+> 早期北德接近性可能主要体现在织体、复调与幻想性音程运动上；魏玛时期的意大利化则更多体现在节奏规整性、模进密度和调性组织上；克滕时期的综合性则表现为多个特征家族共同作用，而不是单一维度的变化。
+
+---
+
+## 11. 辅助验证一：Segment-level 风格混合
+
+## 11.1 目标
+
+回答：
+
+> 巴赫风格迁移是整部作品整体替换，还是作品内部局部语汇比例的变化？
+
+这是本研究最有音乐学潜力的辅助验证。
+
+它可以避免把问题简化为：
+
+```text
+This work is like Vivaldi.
+This work is like Buxtehude.
+```
+
+而是转向：
+
+```text
+This work contains different proportions of North German-like,
+Italian-like, contrapuntal, dance-like, and mixed local segments.
+```
+
+---
+
+## 11.2 方法
+
+对 segment-level features 进行聚类或轻量分类。
+
+建议优先使用可解释方案：
+
+```text
+k-means clustering
+hierarchical clustering
+Gaussian mixture model, optional
+```
+
+聚类数量不宜过多，建议：
+
+```text
+k = 4 to 6
+```
+
+---
+
+## 11.3 Segment 类型命名原则
+
+聚类后不要直接让算法决定音乐学标签。
+
+应先观察每类 segment 的特征均值、代表片段和作曲家分布，再进行谨慎命名。
+
+可能标签：
+
+```text
+North German-like segment
+Italian-like segment
+Contrapuntal dense segment
+Dance-like segment
+Mixed segment
+Other / ambiguous segment
+```
+
+如果某类无法解释，应保留为：
+
+```text
+Cluster A
+Cluster B
+```
+
+不要强行命名。
+
+---
+
+## 11.4 核心指标
+
+对每部作品和每个时期计算：
+
+```text
+segment type distribution
+mixed segment ratio
+Italian-like segment ratio
+North-German-like segment ratio
+segment diversity entropy
+```
+
+---
+
+## 11.5 核心图表
+
+### Figure 4A：Segment cluster space
+
+```text
+UMAP / PCA of segment-level features
+colored by segment cluster
+```
+
+### Figure 4B：Segment type distribution by Bach period
+
+```text
+stacked bar chart:
+Early
+Weimar
+Köthen
+```
+
+### Figure 4C：Representative segments
+
+展示每一类 segment 的少量代表片段，并结合乐谱例子做音乐学解释。
+
+---
+
+## 11.6 预期解释
+
+如果结果支持假设，可以表述为：
+
+> 巴赫早中期风格变化并不是从一种整体风格替换为另一种整体风格，而是不同局部语汇在作品内部比例和功能上的重新配置。魏玛时期可能出现更多意大利协奏曲式局部语汇，而克滕时期则可能呈现更高比例的混合型片段。
+
+---
+
+## 12. 辅助验证二：历史事件窗口
+
+## 12.1 目标
+
+回答：
+
+> 符号音乐特征变化是否与巴赫生平中的关键历史节点形成时间上的对应关系？
+
+本部分只做探索性分析，不做强因果推断。
+
+---
+
+## 12.2 关键事件
+
+建议保留少量最重要事件：
+
+```text
+1705/06 Lübeck visit
+1708 Weimar appointment
+1713/14 Italian concerto contact / transcription period
+1717 Köthen appointment
+```
+
+1723 Leipzig appointment 可作为背景，不进入主分析。
+
+---
+
+## 12.3 分析方式
+
+围绕事件窗口比较：
+
+```text
+before_event
+after_event
+event_window
+```
+
+观察：
+
+```text
+distance shift
+feature family shift
+segment type distribution shift
+```
+
+---
+
+## 12.4 统计方法
+
+使用轻量统计：
+
+```text
+effect size
+bootstrap confidence interval
+permutation test
+```
+
+不建议把事件窗口做成复杂因果模型。
+
+---
+
+## 12.5 谨慎表述
+
+不能写成：
+
+> 吕贝克之行导致了巴赫北德特征增强。
+
+也不能写成：
+
+> 1713/14 年意大利协奏曲接触导致巴赫风格意大利化。
+
+应写成：
+
+> 在相关历史节点前后，若干符号音乐特征和参照距离发生了与传统音乐史叙事相一致的变化。这种对应关系不能单独证明因果，但可以作为重新观察巴赫风格迁移过程的结构性证据。
+
+---
+
+## 13. MusicBERT 补充验证
+
+## 13.1 定位
+
+MusicBERT 不作为主证据。
+
+本研究将其作为补充表征，用来回答：
+
+> 白盒符号特征所观察到的迁移趋势，是否也能在预训练符号音乐表征中部分出现？
+
+---
+
+## 13.2 方法
+
+对同一批 segment 或 work 提取 MusicBERT embeddings。
+
+然后重复少量主实验：
+
+```text
+embedding space visualization
+period centroid trajectory
+distance to reference centroids
+```
+
+不做复杂解释。
+
+---
+
+## 13.3 结果解释
+
+### 如果 MusicBERT 与白盒特征趋势一致
+
+可以写成：
+
+> The supplementary MusicBERT representation shows a broadly similar trajectory, suggesting that the observed trend is not entirely dependent on handcrafted feature design.
+
+### 如果 MusicBERT 与白盒特征趋势不一致
+
+可以写成：
+
+> The discrepancy suggests that pretrained symbolic embeddings may capture different, less directly interpretable aspects of musical structure. Therefore, this study treats MusicBERT as a supplementary representation rather than primary evidence.
+
+---
+
+## 14. 统计与稳健性检查
+
+本研究的统计目标不是追求复杂模型，而是保证结论不过度依赖偶然参数。
+
+建议保留以下检查：
+
+```text
+bootstrap confidence intervals
+permutation tests
+effect sizes
+8/16/32-bar segmentation robustness
+genre-controlled subset analysis
+leave-one-composer-out reference centroid check
+```
+
+---
+
+## 14.1 Leave-one-composer-out 检查
+
+为了避免某个参照作曲家过度影响 centroid，可进行：
+
+```text
+North German centroid without Buxtehude
+North German centroid without Böhm
+Italian centroid without Vivaldi
+Italian centroid without Corelli
+```
+
+如果主趋势仍然存在，则说明结果不完全依赖单一参照作曲家。
+
+---
+
+## 14.2 数据置信度检查
+
+将低置信度作品排除后重新计算：
+
+```text
+main corpus
+high-confidence corpus only
+```
+
+比较结论是否稳定。
+
+---
+
+## 15. 最终图表设计
+
+主文建议控制在 5 到 6 张核心图。
+
+### Figure 1：研究设计图
+
+展示：
+
+```text
+MusicXML corpus
+→ 16-bar segments
+→ white-box features
+→ reference centroids
+→ distance curves
+→ feature interpretation
+```
+
+---
+
+### Figure 2：风格空间与巴赫时间轨迹
+
+展示：
+
+```text
+PCA / UMAP of work-level features
+Bach Early → Weimar → Köthen trajectory
+reference composer groups
+```
+
+---
+
+### Figure 3：参照风格距离曲线
+
+展示：
+
+```text
+distance to North German centroid
+distance to Italian centroid
+distance to German mixed centroid
+across Bach periods
+```
+
+这是全文最重要的主图。
+
+---
+
+### Figure 4：特征家族解释
+
+展示：
+
+```text
+family-level effect size
+family-level ablation impact
+representative feature shifts
+```
+
+---
+
+### Figure 5：Segment-level 风格混合
+
+展示：
+
+```text
+segment type distribution
+by Bach period
+```
+
+---
+
+### Figure 6：历史事件窗口探索性分析
+
+展示：
+
+```text
+event-aligned distance shift
+or feature-family shift
+```
+
+可放入主文末尾或附录，视结果质量决定。
+
+---
+
+### Supplementary Figure：MusicBERT 补充验证
+
+展示：
+
+```text
+MusicBERT embedding trajectory
+MusicBERT-based distance curve
+```
+
+不作为主结论图。
+
+---
+
+## 16. 论文结果组织顺序
+
+建议论文结果部分按照以下顺序写：
+
+```text
+1. Overall symbolic style space
+2. Bach period trajectory
+3. Reference-centroid distance curves
+4. Feature-family interpretation
+5. Segment-level style mixture
+6. Exploratory historical event windows
+7. Supplementary MusicBERT robustness check
+```
+
+其中前三项构成主证据链。
+
+---
+
+## 17. 预期核心结论表述
+
+如果实验结果基本支持假设，论文可形成如下核心结论：
+
+> 巴赫早中期作品的符号音乐特征呈现出与传统音乐史叙事相一致的阶段性迁移。早期作品相对更接近北德键盘与管风琴传统；魏玛时期作品与意大利协奏曲参照的距离缩小，尤其体现在节奏规整性、模进密度和调性组织等特征上；克滕时期则不再表现为单一的意大利化，而是在多个参照风格之间形成更平衡的结构关系。segment-level 分析进一步表明，这种风格迁移并非整部作品风格的简单替换，而更可能表现为局部语汇比例和功能的重新配置。
+
+---
+
+## 18. 结论边界
+
+本研究必须明确以下边界：
+
+1. 本研究不能证明历史事件与风格变化之间的强因果关系；
+2. 本研究不能替代传统作品分析和文献研究；
+3. 本研究中的 reference centroid 是一种操作性近似，不等同于完整历史风格本身；
+4. segment-level 聚类不能直接等同于真正的主题、动机或修辞类型；
+5. MusicBERT embedding 只作为补充验证，不作为主要音乐学证据；
+6. 体裁变化可能是风格迁移的一部分，而不是需要完全排除的噪声。
+
+---
+
+## 19. 最小可发表版本
+
+如果需要进一步压缩工作量，最小可发表版本可以只保留：
+
+```text
+Bach Early / Weimar / Köthen
+Buxtehude + Böhm
+Vivaldi + Corelli
+Telemann
+16-bar segments
+white-box symbolic features
+reference centroid distance curves
+feature-family effect size
+segment-level style mixture
+```
+
+暂时移除：
+
+```text
+MusicBERT
+historical event window
+8/32-bar robustness
+Handel
+Reincken
+complex statistical models
+```
+
+这样仍然可以形成一篇完整论文。
+
+---
+
+## 20. 推荐论文题目
+
+可以考虑以下题目方向：
+
+### 题目 1
+
+**Tracing Stylistic Migration in Bach’s Early and Middle Periods through Symbolic Music Features**
+
+### 题目 2
+
+**From North German Counterpoint to Italian Concerto Idioms: A Symbolic-Music Study of Bach’s Early Stylistic Migration**
+
+### 题目 3
+
+**Local Idioms and Stylistic Synthesis in Bach’s Early Instrumental Works: A Symbolic Feature-Based Analysis**
+
+### 题目 4
+
+**Computational Evidence for Stylistic Assimilation and Synthesis in Bach’s Early and Middle Periods**
+
+---
+
+## 21. 推荐摘要草稿
+
+This study proposes an exploratory symbolic-music framework for examining stylistic migration in Johann Sebastian Bach’s early and middle periods. Rather than treating style as a fixed composer-level label, we analyze whether Bach’s works show a staged movement from North German keyboard and organ traditions, through the assimilation of Italian concerto idioms in Weimar, toward a more synthetic instrumental language in Köthen. Using MusicXML scores, we extract interpretable symbolic feature families covering pitch, interval, rhythm, tonal-harmonic organization, polyphony, texture, and motivic-sequential patterns. We construct reference centroids for North German, Italian, and German mixed-style repertoires and measure the distance between Bach’s period-level representations and these external stylistic centers. We further examine feature-family contributions and segment-level style mixtures to determine whether stylistic change occurs as a whole-work replacement or as a redistribution of local idioms. The results are interpreted cautiously in relation to Bach’s biographical stages and known historical contact events. This study does not claim to replace traditional musicological analysis, but offers a reproducible structural evidence framework for re-examining Bach’s stylistic assimilation and synthesis.
+
+---
+
+## 22. 推荐中文摘要草稿
+
+本研究提出一套面向巴赫早中期风格迁移问题的符号音乐分析框架。研究并不试图以计算方法取代传统音乐学解释，而是将“北德传统吸收—魏玛时期意大利协奏曲语言进入—克滕时期器乐综合风格形成”这一音乐史叙事，转化为可复核、可比较的结构性证据。本文基于 MusicXML 乐谱提取音高、音程、节奏、调性与和声、复调与织体、动机与模进等白盒符号特征，并分别构建北德传统、意大利传统和德国综合型参照风格中心。通过比较巴赫 Early、Weimar 与 Köthen 三个阶段作品到不同参照中心的距离，本文考察其风格位置是否呈现阶段性迁移。同时，本文进一步分析不同特征家族对风格距离的贡献，并在 segment 层面观察作品内部局部语汇的比例变化。研究结果将被谨慎地放回巴赫生平阶段和相关历史事件中解释。本文的目标不是证明单一历史事件对风格变化的因果作用，而是为巴赫早中期风格吸收、转化与综合过程提供一种新的符号音乐证据形式。
